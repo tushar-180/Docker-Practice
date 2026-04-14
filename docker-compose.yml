@@ -1,0 +1,38 @@
+
+
+services:
+  backend:
+    build: ./server # build the image from the Dockerfile in the server directory
+    ports:
+      - "5000:5000" # map port 5000 on the host to port 5000 in the container
+    volumes:
+      - ./server:/app # Sync local server files to container (Hot Reload)
+      - /app/node_modules # Prevent local node_modules from overwriting container's
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/todo_db # set the MONGO_URI environment variable
+      - PORT=5000 # set the PORT environment variable
+    depends_on:
+      - mongo # start the mongo container before the backend container
+
+  frontend:
+    build:
+      context: ./client
+      args:
+        VITE_API_URL: http://localhost:5000
+    ports:
+      - "3000:5173"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
