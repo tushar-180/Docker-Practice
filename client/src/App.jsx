@@ -44,7 +44,7 @@ function App() {
 
         {/* Header */}
         <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
-          🐳 Docker Todo App
+          🐳 Docker Todo App 2.0
         </h1>
 
         {/* Input Section */}
