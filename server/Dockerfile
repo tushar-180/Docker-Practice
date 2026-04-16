@@ -10,6 +10,9 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+#curl
+RUN apk add --no-cache curl
+
 # Copy all files
 COPY . .
 

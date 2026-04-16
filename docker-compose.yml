@@ -1,5 +1,3 @@
-
-
 services:
   backend:
     build: ./server # build the image from the Dockerfile in the server directory
@@ -12,7 +10,14 @@ services:
       - MONGO_URI=mongodb://mongo:27017/todo_db # set the MONGO_URI environment variable
       - PORT=5000 # set the PORT environment variable
     depends_on:
-      - mongo # start the mongo container before the backend container
+      mongo:
+        condition: service_healthy # wait for mongo to accept connections before starting backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
 
   frontend:
     build:
@@ -25,7 +30,8 @@ services:
       - ./client:/app
       - /app/node_modules
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
 
   mongo:
     image: mongo:latest
@@ -33,6 +39,19 @@ services:
       - "27018:27017"
     volumes:
       - mongo-data:/data/db
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--quiet",
+          "--eval",
+          "db.adminCommand({ ping: 1 }).ok",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
 volumes:
   mongo-data:

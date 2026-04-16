@@ -39,7 +39,7 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-linear-to-br from-slate-100 to-slate-200 flex items-center justify-center p-6">
       <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-6">
 
         {/* Header */}
@@ -52,6 +52,7 @@ function App() {
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && addTodo()}
             placeholder="Enter a new todo..."
             className="flex-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />

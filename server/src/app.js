@@ -14,6 +14,16 @@ app.use(express.static("public"));
 app.get("/", (req, res) => {
   res.send("API Running...");
 });
+app.get("/health", (req, res) => {
+  const isDatabaseReady = mongoose.connection.readyState === 1;
+
+  res.status(isDatabaseReady ? 200 : 503).json({
+    status: isDatabaseReady ? "OK" : "DEGRADED",
+    database: isDatabaseReady ? "connected" : "disconnected",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
+});
 app.use("/api/todos", todoRoutes);
 
 const PORT = process.env.PORT || 5000;
